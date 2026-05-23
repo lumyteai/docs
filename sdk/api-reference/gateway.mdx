@@ -1,0 +1,64 @@
+---
+title: Gateway API
+description: Transparent reverse proxy for all LLM providers
+---
+
+# Gateway API
+
+The gateway is a transparent reverse proxy. Point your LLM client at Nolma's gateway URL instead of the provider's URL directly.
+
+## Base URL
+
+```
+https://gateway.nolma.ai
+```
+
+## Authentication
+
+Every request must include:
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `NM-Key` | Yes | Your Nolma API key (`nm_live_...`) |
+| `NM-Agent` | Recommended | Agent name for tracking |
+| `NM-Session` | Optional | Session ID (SDK sets automatically) |
+| `NM-Env` | Optional | `production` / `staging` / `development` |
+| `NM-User` | Optional | End-user ID for per-user budgets |
+
+## Provider routing
+
+| Provider | Gateway URL |
+|----------|------------|
+| OpenAI | `https://gateway.nolma.ai/openai/v1/chat/completions` |
+| Anthropic | `https://gateway.nolma.ai/anthropic/v1/messages` |
+| Gemini | `https://gateway.nolma.ai/gemini/v1/models/{model}:generateContent` |
+| Groq | `https://gateway.nolma.ai/groq/openai/v1/chat/completions` |
+| Mistral | `https://gateway.nolma.ai/mistral/v1/chat/completions` |
+
+The gateway forwards the entire request body unchanged. The response format is identical to the provider's native response.
+
+## Example
+
+```bash
+curl -X POST https://gateway.nolma.ai/anthropic/v1/messages \
+  -H "NM-Key: nm_live_abc123" \
+  -H "NM-Agent: my-agent" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "claude-haiku-4-5-20251001",
+    "max_tokens": 100,
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+## Health check
+
+```
+GET https://gateway.nolma.ai/health
+```
+
+Returns:
+```json
+{"status": "ok", "version": "0.1.0"}
+```

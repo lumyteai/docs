@@ -1,0 +1,50 @@
+---
+title: Guard Overview
+description: Real-time cost monitoring and budget enforcement for AI agents
+---
+
+# Nolma Guard
+
+Guard gives you complete visibility into what your AI agents cost — and lets you stop runaway spend before it becomes a bill.
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="Real-time tracking" icon="chart-line">
+    Costs update within 500ms of every LLM call. Not daily. Real-time.
+  </Card>
+  <Card title="Hard enforcement" icon="shield">
+    HTTP 429 fires **before** the LLM call. Zero cost incurred when limit is hit.
+  </Card>
+  <Card title="Multi-provider" icon="globe">
+    OpenAI, Anthropic, Gemini, Groq, and Mistral — all in one dashboard.
+  </Card>
+  <Card title="Per-agent tracking" icon="robot">
+    See cost by agent, model, user, environment, and session.
+  </Card>
+</CardGroup>
+
+## What gets tracked
+
+Every LLM call through the gateway creates a **span** with:
+
+| Field | Description |
+|-------|-------------|
+| Agent name | From `NM-Agent` header |
+| Model | The LLM model used |
+| Provider | openai / anthropic / gemini / groq / mistral |
+| Input tokens | Prompt token count |
+| Output tokens | Completion token count |
+| Cost (USD) | Calculated from token counts |
+| Latency | End-to-end response time |
+| Session ID | Groups related calls |
+
+## Dashboard pages
+
+**Guard → Overview** — Total cost today, burn rate, projected month end, top agents, spend over time chart.
+
+**Guard → Sessions** — Every session with cost, token count, span count, and status. Click any session to see the full span tree.
+
+**Guard → Budgets** — Create and manage budget rules. See real-time utilization from Redis.
+
+**Guard → Alerts** — Alert history with severity, type, and reviewed status.

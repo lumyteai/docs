@@ -1,0 +1,111 @@
+---
+title: Node.js SDK
+description: Install and use the Nolma Node.js SDK
+---
+
+# Node.js SDK
+
+```bash
+npm install @nolma/node
+# or
+pnpm add @nolma/node
+```
+
+Requires Node.js 18+. Zero dependencies — uses built-in `AsyncLocalStorage` and `fetch`.
+
+## Basic usage
+
+```typescript
+import { Nolma } from '@nolma/node'
+import Anthropic from '@anthropic-ai/sdk'
+
+const nolma = new Nolma({ apiKey: 'nm_live_abc123' })
+
+const result = await nolma.session(
+  { name: 'my-agent' },
+  async () => {
+    const client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      baseURL: 'https://gateway.nolma.ai/anthropic',
+      defaultHeaders: nolma.getHeaders()
+    })
+
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 100,
+      messages: [{ role: 'user', content: 'Hello' }]
+    })
+
+    return response.content[0].text
+  }
+)
+```
+
+## Session tracking
+
+```typescript
+const result = await nolma.session(
+  { name: 'support-bot', userId: 'user_123' },
+  async () => {
+    const sessionId = nolma.sessionId
+
+    // All LLM calls here are grouped
+    // under this session automatically
+
+    const output = await myLLMCall()
+
+    nolma.signal(sessionId!, { action: 'accepted' })
+
+    return output
+  }
+)
+```
+
+## Signals
+
+```typescript
+// Fire and forget — never throws, never blocks
+nolma.signal(sessionId, { action: 'accepted' })
+nolma.signal(sessionId, { action: 'edited', editDistance: 42 })
+nolma.signal(sessionId, { action: 'regenerated' })
+nolma.signal(sessionId, { action: 'abandoned' })
+```
+
+## Reference
+
+```typescript
+class Nolma {
+  constructor(options: {
+    apiKey: string
+    gatewayUrl?: string  // default: https://gateway.nolma.ai
+  })
+
+  session<T>(
+    options: { name: string; userId?: string },
+    fn: () => Promise<T>
+  ): Promise<T>
+
+  get sessionId(): string | undefined
+
+  getHeaders(): Record<string, string>
+
+  signal(
+    sessionId: string,
+    options: {
+      action: string
+      editDistance?: number
+      customLabel?: string
+    }
+  ): void
+
+  async signalAsync(
+    sessionId: string,
+    options: { action: string; editDistance?: number }
+  ): Promise<void>
+
+  async scanContext(
+    content: string,
+    options?: { source?: string; agent?: string }
+  ): Promise<ScanResult>
+}
+```

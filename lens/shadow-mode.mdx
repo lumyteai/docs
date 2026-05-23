@@ -1,0 +1,55 @@
+---
+title: Shadow Mode
+description: Test cheaper models on real traffic before switching
+---
+
+# Shadow Mode
+
+Shadow mode routes a percentage of real traffic to a candidate model. Compare cost and quality before fully switching.
+
+## How it works
+
+```
+Your agent → gateway.nolma.ai
+                |
+     ┌──────────┴──────────┐
+     |                     |
+  90% traffic          10% traffic
+     |                     |
+   gpt-4o             gpt-4o-mini
+  (primary)            (candidate)
+     |                     |
+     └──────────┬──────────┘
+                |
+       Both results tracked
+       separately in Lens
+```
+
+The user always sees the primary model response. Shadow runs silently.
+
+## Setting up shadow mode
+
+Dashboard → Lens → Shadow Mode → Select agent → Select candidate model → Set traffic % (default 10%) → Enable
+
+## Reading results
+
+After 50+ shadow calls the comparison table appears:
+
+| Metric | Primary (gpt-4o) | Candidate (gpt-4o-mini) |
+|--------|-------------------|-------------------------|
+| Cost/call | $0.0241 | $0.0028 |
+| Avg latency | 1,240ms | 380ms |
+| Sample size | 900 | 100 |
+
+Cost saving: **88% cheaper**
+
+## Promoting a candidate
+
+When you click "Promote to 100%":
+1. Shadow mode disables
+2. You update your code to use the new model directly
+3. Nolma tracks the new model as the primary going forward
+
+<Warning>
+Nolma cannot change your code. After promoting, update your agent to use the new model name.
+</Warning>

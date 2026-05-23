@@ -1,0 +1,97 @@
+---
+title: Budget Rules
+description: Set hard limits that stop AI spend before it happens
+---
+
+# Budget Rules
+
+Budget rules stop spend before the LLM call fires. When a limit is hit Nolma returns HTTP 429 immediately — the LLM provider never receives the request.
+
+## Creating a budget rule
+
+Dashboard → Guard → Budgets → Add rule
+
+### Scope types
+
+| Scope | What it limits |
+|-------|---------------|
+| `org` | All agents in your organization |
+| `agent` | One specific agent by name |
+| `user` | One end user (NM-User header) |
+| `model` | One LLM model |
+| `env` | One environment (prod/staging/dev) |
+
+### Enforcement modes
+
+| Mode | What happens at the limit |
+|------|--------------------------|
+| `hard_block` | Returns 429, no LLM call made |
+| `auto_downgrade` | Switches to cheaper model |
+| `throttle` | Slows request rate |
+| `alert_only` | Sends alert, allows through |
+
+### Example rules
+
+**Daily limit per agent:**
+
+| Field | Value |
+|-------|-------|
+| Scope | agent → support-bot |
+| Limit | $15.00 |
+| Period | daily |
+| Mode | hard_block |
+| Alert at | 80% |
+
+**Monthly org-wide limit:**
+
+| Field | Value |
+|-------|-------|
+| Scope | org |
+| Limit | $500.00 |
+| Period | monthly |
+| Mode | hard_block |
+| Alert at | 70% |
+
+## Budget templates
+
+New accounts can apply a template from the Budgets page:
+
+- **Conservative** — $10/day hard block. Good for development and testing.
+- **Growth** — $100/day soft limit with auto-downgrade at 80%. Good for production startups.
+- **Enterprise** — $1,000/month org-wide. Good for regulated companies.
+
+## What happens when a limit is hit
+
+Your agent receives:
+
+```json
+{
+  "error": {
+    "type": "NM_BUDGET_HARD_LIMIT",
+    "message": "Agent 'support-bot' daily budget of $15.00 exceeded.",
+    "spent": 15.43,
+    "limit": 15.00,
+    "period": "daily",
+    "reset_at": "2026-05-22T00:00:00Z",
+    "agent": "support-bot"
+  }
+}
+```
+
+Handle this in your code:
+
+```python
+try:
+    response = client.messages.create(...)
+except anthropic.APIStatusError as e:
+    if e.status_code == 429:
+        error = e.response.json()["error"]
+        if error["type"] == "NM_BUDGET_HARD_LIMIT":
+            print(f"Budget hit. Resets: {error['reset_at']}")
+```
+
+## Emergency kill switch
+
+Stop ALL agents instantly: Guard → "Pause all agents" button.
+
+All LLM calls return 429 immediately. Click "Resume all agents" to restore.

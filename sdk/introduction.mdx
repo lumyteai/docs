@@ -1,0 +1,61 @@
+---
+title: What is Nolma?
+description: AI gateway platform for cost monitoring, prompt intelligence, and security
+---
+
+# What is Nolma?
+
+Nolma is an **AI gateway platform** that sits between your agents and every LLM provider. One URL change gives you:
+
+- **Real-time cost tracking** per agent, model, user, and session
+- **Hard budget enforcement** that stops spend before the LLM call fires
+- **Prompt intelligence** — track what users do with AI outputs and get recommendations to cut costs
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Integrate in 5 minutes
+  </Card>
+  <Card title="Python SDK" icon="python" href="/sdk/python">
+    pip install nolma
+  </Card>
+  <Card title="Node.js SDK" icon="node" href="/sdk/node">
+    npm install @nolma/node
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/gateway">
+    Full API docs
+  </Card>
+</CardGroup>
+
+## How it works
+
+```
+Your agent code
+      |
+Change base_url to gateway.nolma.ai
+      |
+Every LLM call tracked automatically
+      |
+Dashboard shows real-time costs
+Budget enforcement fires if needed
+```
+
+## Supported providers
+
+| Provider | URL prefix | Models |
+|----------|-----------|--------|
+| OpenAI | `/openai` | gpt-4o, gpt-4o-mini |
+| Anthropic | `/anthropic` | claude-sonnet-4-6, claude-haiku-4-5 |
+| Google Gemini | `/gemini` | gemini-2.5-pro, gemini-2.0-flash |
+| Groq | `/groq` | llama-3.3-70b |
+| Mistral | `/mistral` | mistral-small-latest |
+
+## The three products
+
+### Guard — Cost control
+Real-time cost dashboard. Hard budget enforcement that blocks before the LLM call fires. Zero cost incurred when limits hit.
+
+### Lens — Prompt intelligence
+Track what users do with AI outputs. Acceptance rates, edit distances, retry patterns. Evidence-backed recommendations to cut costs.
+
+### Shield — Security (coming soon)
+Injection detection, PII redaction, compliance audit trail. Block threats before they reach the LLM.

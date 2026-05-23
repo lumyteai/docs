@@ -1,0 +1,60 @@
+---
+title: Signal Endpoint
+description: Send downstream user signals to power Lens analytics
+---
+
+# Signal Endpoint
+
+```
+POST https://gateway.nolma.ai/v1/signal
+```
+
+## Request
+
+```json
+{
+  "session_id": "sess_8f3a2c19",
+  "action": "accepted",
+  "edit_distance": null,
+  "custom_label": null
+}
+```
+
+## Headers
+
+| Header | Required |
+|--------|----------|
+| `NM-Key` | Yes |
+| `Content-Type` | `application/json` |
+
+## Actions
+
+| Action | Description |
+|--------|-------------|
+| `accepted` | User used the output without changes (strongest positive) |
+| `edited` | User edited before using (include `edit_distance`) |
+| `regenerated` | User clicked regenerate (negative signal) |
+| `abandoned` | User left without using output (strongest negative) |
+| `thumbs_up` | Explicit positive feedback |
+| `thumbs_down` | Explicit negative feedback |
+| `published` | User published the output |
+| `sent` | User sent the output |
+
+## Response
+
+```json
+{ "ok": true }
+```
+
+## Example
+
+```bash
+curl -X POST https://gateway.nolma.ai/v1/signal \
+  -H "NM-Key: nm_live_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session_id": "sess_8f3a2c19",
+    "action": "edited",
+    "edit_distance": 42
+  }'
+```

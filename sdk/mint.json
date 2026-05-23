@@ -1,0 +1,90 @@
+{
+  "name": "Nolma",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#C0C1FF",
+    "light": "#C0C1FF",
+    "dark": "#9899FF",
+    "background": {
+      "dark": "#050505"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Dashboard",
+      "url": "https://nolma.ai/dashboard"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://nolma.ai/sign-up"
+  },
+  "tabs": [],
+  "anchors": [
+    {
+      "name": "API Reference",
+      "icon": "code",
+      "url": "api-reference"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/lumyteai"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Get Started",
+      "pages": [
+        "introduction",
+        "quickstart"
+      ]
+    },
+    {
+      "group": "SDKs",
+      "pages": [
+        "sdk/python",
+        "sdk/node"
+      ]
+    },
+    {
+      "group": "Guard",
+      "pages": [
+        "guard/overview",
+        "guard/budgets",
+        "guard/alerts"
+      ]
+    },
+    {
+      "group": "Lens",
+      "pages": [
+        "lens/overview",
+        "lens/signals",
+        "lens/shadow-mode"
+      ]
+    },
+    {
+      "group": "Providers",
+      "pages": [
+        "providers/openai",
+        "providers/anthropic",
+        "providers/gemini"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/gateway",
+        "api-reference/signal",
+        "api-reference/errors"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/nolmaai"
+  }
+}

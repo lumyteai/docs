@@ -1,0 +1,51 @@
+---
+title: Google Gemini
+description: Use Gemini models through the Nolma gateway
+---
+
+# Google Gemini via Nolma
+
+## Setup
+
+Gemini requests go through the `/gemini` prefix:
+
+```python
+import openai  # Gemini supports OpenAI-compatible API
+
+client = openai.OpenAI(
+    api_key=os.environ["GEMINI_API_KEY"],
+    base_url="https://gateway.nolma.ai/gemini",
+    default_headers={
+        "NM-Key": "nm_live_abc123",
+        "NM-Agent": "my-agent",
+    }
+)
+```
+
+## Supported models
+
+| Model | Tier | Cost (input / output per 1M tokens) |
+|-------|------|-------------------------------------|
+| gemini-2.5-pro | Premium | $1.25 / $10.00 |
+| gemini-2.0-flash | Economy | $0.10 / $0.40 |
+
+## Native Gemini SDK
+
+You can also use the native Gemini SDK with a custom endpoint:
+
+```python
+import google.generativeai as genai
+
+# Configure to use Nolma gateway
+genai.configure(
+    api_key=os.environ["GEMINI_API_KEY"],
+    transport="rest",
+    client_options={
+        "api_endpoint": "https://gateway.nolma.ai/gemini"
+    }
+)
+```
+
+<Note>
+When using the native Gemini SDK, pass Nolma headers via the request metadata or use the OpenAI-compatible interface for simpler integration.
+</Note>

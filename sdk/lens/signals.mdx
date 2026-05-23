@@ -1,0 +1,83 @@
+---
+title: Signal Collection
+description: Collect downstream user signals to power Lens analytics
+---
+
+# Signal Collection
+
+Signals are the raw data Lens runs on. They tell Nolma what users actually do with your AI outputs.
+
+## How to send signals
+
+### Python SDK
+
+```python
+from nolma import Nolma
+
+nolma = Nolma(api_key="nm_live_abc123")
+
+@nolma.session(name="my-agent")
+async def agent(user_input: str):
+    session_id = nolma.session_id
+    output = await llm_call(user_input)
+
+    user_action = show_to_user(output)
+
+    if user_action == "used":
+        await nolma.signal_async(session_id, "accepted")
+    elif user_action == "modified":
+        chars_changed = count_edits(output, user_action.text)
+        await nolma.signal_async(
+            session_id, "edited", edit_distance=chars_changed
+        )
+    elif user_action == "regenerate":
+        await nolma.signal_async(session_id, "regenerated")
+```
+
+### Node.js SDK
+
+```typescript
+const result = await nolma.session(
+  { name: 'my-agent' },
+  async () => {
+    const sessionId = nolma.sessionId!
+    const output = await llmCall(input)
+
+    // After user acts:
+    nolma.signal(sessionId, { action: 'accepted' })
+
+    return output
+  }
+)
+```
+
+### Direct API (no SDK)
+
+```bash
+curl -X POST https://gateway.nolma.ai/v1/signal \
+  -H "NM-Key: nm_live_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "session_id": "sess_abc123",
+    "action": "accepted"
+  }'
+```
+
+## Signal types
+
+| Action | Meaning | edit_distance |
+|--------|---------|---------------|
+| `accepted` | Used as-is | not needed |
+| `edited` | Modified before using | required |
+| `regenerated` | Clicked regenerate | not needed |
+| `abandoned` | Left without using | not needed |
+| `thumbs_up` | Explicit positive | not needed |
+| `thumbs_down` | Explicit negative | not needed |
+| `sent` | Published/sent output | not needed |
+
+## Minimum data needed
+
+Lens requires **100 signals per agent** before generating recommendations.
+
+- At 10 signals/day → recommendations appear after ~10 days
+- At 100 signals/day → recommendations appear the next day

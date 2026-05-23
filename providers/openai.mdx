@@ -1,0 +1,57 @@
+---
+title: OpenAI
+description: Use GPT models through the Nolma gateway
+---
+
+# OpenAI via Nolma
+
+## Setup
+
+```python
+import openai
+
+client = openai.OpenAI(
+    api_key=os.environ["OPENAI_API_KEY"],
+    base_url="https://gateway.nolma.ai/openai",
+    default_headers={
+        "NM-Key": "nm_live_abc123",
+        "NM-Agent": "my-agent",
+    }
+)
+```
+
+## Supported models
+
+| Model | Tier | Cost (input / output per 1M tokens) |
+|-------|------|-------------------------------------|
+| gpt-4o | Premium | $2.50 / $10.00 |
+| gpt-4o-mini | Standard | $0.15 / $0.60 |
+
+## Streaming
+
+```python
+stream = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content:
+        print(chunk.choices[0].delta.content, end="", flush=True)
+```
+
+## Node.js
+
+```typescript
+import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+  baseURL: 'https://gateway.nolma.ai/openai',
+  defaultHeaders: {
+    'NM-Key': 'nm_live_abc123',
+    'NM-Agent': 'my-agent',
+  }
+})
+```

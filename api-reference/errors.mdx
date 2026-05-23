@@ -1,0 +1,123 @@
+---
+title: Error Codes
+description: All Nolma error types and how to handle them
+---
+
+# Error Codes
+
+All Nolma errors follow this format:
+
+```json
+{
+  "error": {
+    "type": "NM_ERROR_TYPE",
+    "code": "NM_ERROR_TYPE",
+    "message": "Human readable message"
+  }
+}
+```
+
+## NM_UNAUTHORIZED (401)
+
+Missing or invalid `NM-Key` header.
+
+```json
+{
+  "error": {
+    "type": "NM_UNAUTHORIZED",
+    "message": "Invalid or missing NM-Key header."
+  }
+}
+```
+
+**Fix:** Check your `NM-Key` header value. Keys start with `nm_live_` or `nm_test_`.
+
+---
+
+## NM_BUDGET_HARD_LIMIT (429)
+
+Agent has exceeded its budget limit. The LLM call was NOT made — zero cost.
+
+```json
+{
+  "error": {
+    "type": "NM_BUDGET_HARD_LIMIT",
+    "message": "Agent 'support-bot' daily budget of $15.00 exceeded.",
+    "spent": 15.43,
+    "limit": 15.00,
+    "period": "daily",
+    "reset_at": "2026-05-22T00:00:00Z",
+    "agent": "support-bot",
+    "session_id": "sess_8f3a2c19"
+  }
+}
+```
+
+**Fix:** Increase the budget limit or wait for the reset time.
+
+---
+
+## NM_SHIELD_BLOCKED (403)
+
+Request blocked by Shield security policy.
+
+```json
+{
+  "error": {
+    "type": "NM_SHIELD_BLOCKED",
+    "message": "Request blocked by Nolma Shield.",
+    "risk_score": 0.94,
+    "threat_type": "INJECTION",
+    "session_id": "sess_8f3a2c19"
+  }
+}
+```
+
+**Fix:** Review the request content. If a false positive, adjust Shield thresholds in Settings.
+
+---
+
+## NM_PAYMENT_REQUIRED (402)
+
+Feature requires a higher plan.
+
+```json
+{
+  "error": {
+    "type": "NM_PAYMENT_REQUIRED",
+    "message": "Shadow mode requires Pro plan."
+  }
+}
+```
+
+---
+
+## NM_RETRY_LOOP_DETECTED (429)
+
+Agent made too many calls too quickly. Blocked for 5 minutes to prevent runaway spend.
+
+```json
+{
+  "error": {
+    "type": "NM_RETRY_LOOP_DETECTED",
+    "message": "Retry loop detected. Blocked for 5 minutes.",
+    "resume_at": "2026-05-22T10:35:00Z",
+    "agent": "support-bot"
+  }
+}
+```
+
+---
+
+## NM_PII_DETECTED (400)
+
+PII detected in request with block mode enabled.
+
+```json
+{
+  "error": {
+    "type": "NM_PII_DETECTED",
+    "message": "PII detected in request. Block mode is enabled."
+  }
+}
+```

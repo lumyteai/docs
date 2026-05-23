@@ -1,0 +1,61 @@
+---
+title: Lens Overview
+description: Prompt intelligence powered by downstream user signals
+---
+
+# Nolma Lens
+
+Lens turns user behavior into actionable recommendations. It answers: **are users actually happy with what your agents produce?**
+
+## How it works
+
+```
+User interacts with AI output
+        |
+Your code calls nolma.signal()
+        |
+Lens tracks acceptance rates,
+edit distances, retry rates
+        |
+After 100+ signals: Claude generates
+evidence-backed recommendations
+        |
+Dashboard shows: "Switch to gpt-4o-mini,
+save $43/mo, low quality risk"
+```
+
+## What Lens measures
+
+| Metric | Description |
+|--------|-------------|
+| Acceptance rate | % of outputs used without changes |
+| Edit rate | % of outputs the user modified |
+| Edit distance | How many characters users change |
+| Retry rate | % of times user regenerated |
+| Abandon rate | % of times user left without using |
+| Downgrade score | 0-100 readiness to use cheaper model |
+
+## Downgrade readiness score
+
+Calculated weekly per agent:
+
+| Component | Weight |
+|-----------|--------|
+| Acceptance rate | 40% |
+| Stability (low retry rate) | 25% |
+| Focus (low abandon rate) | 20% |
+| Consistency (low edit rate) | 15% |
+
+- Score >= 75 → Shadow mode recommended
+- Score >= 90 → Safe to switch models
+
+## Getting started
+
+Add 2 lines to your agent code:
+
+```python
+# After user acts on the output:
+await nolma.signal_async(session_id, "accepted")
+```
+
+That's all. Lens starts working after 100 signals per agent.

@@ -1,0 +1,46 @@
+---
+title: Alerts
+description: Get notified when budgets are hit or anomalies are detected
+---
+
+# Alerts
+
+Nolma sends alerts when:
+- Budget threshold reached (default 80%)
+- Budget hard limit hit
+- Cost spike detected (>5x rolling average)
+- Retry loop detected (>10 calls/60 seconds)
+- Agent goes silent (was active, now 0 calls)
+- Projected to exceed budget within 3 hours
+
+## Alert channels
+
+### Slack
+
+Dashboard → Settings → Alerts → Slack → Paste your webhook URL → Save
+
+Get a Slack webhook at: api.slack.com/apps → Incoming Webhooks
+
+### Email
+
+Alerts are sent to your account email by default. Add additional recipients in Dashboard → Settings → Alerts → Email.
+
+### WhatsApp
+
+Dashboard → Settings → Alerts → WhatsApp → Enter Twilio credentials → Enter your WhatsApp number → Test alert
+
+Requires a Twilio account with WhatsApp Business API enabled.
+
+## Anomaly detection
+
+Nolma automatically detects:
+
+| Anomaly | Trigger |
+|---------|---------|
+| Cost spike | >5x 7-day rolling average |
+| Retry loop | >10 calls in 60 seconds |
+| Daily pace | 70% of budget before noon |
+| Zero spend | Agent active yesterday, 0 calls today |
+| Predictive | Will hit budget limit within 3 hours |
+
+Anomalies appear in Guard → Alerts and trigger your configured channels.

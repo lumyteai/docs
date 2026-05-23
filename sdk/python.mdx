@@ -1,0 +1,143 @@
+---
+title: Python SDK
+description: Install and use the Nolma Python SDK
+---
+
+# Python SDK
+
+The Nolma Python SDK adds session tracking and signal collection to your agents. It works alongside the gateway integration.
+
+## Installation
+
+```bash
+pip install nolma
+```
+
+Requires Python 3.9+. Zero dependencies beyond `httpx`.
+
+## Basic usage
+
+```python
+from nolma import Nolma
+import anthropic
+
+nolma = Nolma(api_key="nm_live_abc123")
+
+@nolma.session(name="my-agent")
+async def my_agent(user_input: str):
+    client = anthropic.Anthropic(
+        api_key="your-key",
+        base_url="https://gateway.nolma.ai/anthropic",
+        default_headers=nolma.get_headers()
+    )
+
+    response = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=200,
+        messages=[{"role": "user", "content": user_input}]
+    )
+
+    return response.content[0].text
+```
+
+## Session tracking
+
+The `@nolma.session` decorator:
+- Creates a session ID automatically
+- Propagates it via `contextvars`
+- All LLM calls within the function are grouped under one session
+
+```python
+@nolma.session(name="support-bot", user_id="user_123")
+async def handle_request(query: str):
+    session_id = nolma.session_id
+
+    result = await llm_call(query)
+
+    await nolma.signal_async(session_id, "accepted")
+
+    return result
+```
+
+## Signals
+
+Signals tell Lens what users do with AI outputs. This powers acceptance rate analytics and recommendations.
+
+```python
+# User accepted the output
+await nolma.signal_async(session_id, "accepted")
+
+# User edited the output
+await nolma.signal_async(session_id, "edited", edit_distance=42)
+
+# User asked to regenerate
+await nolma.signal_async(session_id, "regenerated")
+
+# User abandoned (did not use output)
+await nolma.signal_async(session_id, "abandoned")
+```
+
+## Signal types
+
+| Action | When to use |
+|--------|------------|
+| `accepted` | User used output without changes |
+| `edited` | User modified before using |
+| `regenerated` | User clicked regenerate |
+| `abandoned` | User left without using |
+| `thumbs_up` | Explicit positive feedback |
+| `thumbs_down` | Explicit negative feedback |
+| `sent` | User sent/published the output |
+
+## get_headers()
+
+Returns headers to inject into your LLM client.
+
+```python
+@nolma.session(name="my-agent")
+async def agent():
+    headers = nolma.get_headers()
+    # Returns:
+    # {
+    #   "NM-Key": "nm_live_abc123",
+    #   "NM-Agent": "my-agent",
+    #   "NM-Session": "sess_xxx..."
+    # }
+
+    client = anthropic.Anthropic(
+        api_key="...",
+        base_url="https://gateway.nolma.ai/anthropic",
+        default_headers=headers
+    )
+```
+
+## Reference
+
+```python
+class Nolma:
+    def __init__(
+        self,
+        api_key: str,
+        gateway_url: str = "https://gateway.nolma.ai"
+    )
+
+    def session(
+        self,
+        name: str,
+        user_id: str | None = None
+    ) -> Callable  # decorator
+
+    @property
+    def session_id(self) -> str | None
+
+    def get_headers(self) -> dict[str, str]
+
+    async def signal_async(
+        self,
+        session_id: str,
+        action: str,
+        edit_distance: int | None = None
+    ) -> None
+
+    async def close(self) -> None
+```

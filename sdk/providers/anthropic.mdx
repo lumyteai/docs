@@ -1,0 +1,64 @@
+---
+title: Anthropic
+description: Use Claude models through the Nolma gateway
+---
+
+# Anthropic via Nolma
+
+## Setup
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key=os.environ["ANTHROPIC_API_KEY"],
+    base_url="https://gateway.nolma.ai/anthropic",
+    default_headers={
+        "NM-Key": "nm_live_abc123",
+        "NM-Agent": "my-agent",
+        # Optional:
+        "NM-User": "user_123",
+        "NM-Env": "production",
+    }
+)
+```
+
+## Supported models
+
+| Model | Tier | Cost (input / output per 1M tokens) |
+|-------|------|-------------------------------------|
+| claude-sonnet-4-6 | Premium | $3.00 / $15.00 |
+| claude-haiku-4-5-20251001 | Economy | $0.08 / $0.40 |
+
+## Streaming
+
+Streaming works exactly as normal:
+
+```python
+with client.messages.stream(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=500,
+    messages=[{"role": "user", "content": "Tell me a story"}]
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+```
+
+## Node.js
+
+```typescript
+import Anthropic from '@anthropic-ai/sdk'
+
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: 'https://gateway.nolma.ai/anthropic',
+  defaultHeaders: {
+    'NM-Key': 'nm_live_abc123',
+    'NM-Agent': 'my-agent',
+  }
+})
+```
+
+## Required headers
+
+The `anthropic-version` header is forwarded automatically. You do not need to add it manually.
