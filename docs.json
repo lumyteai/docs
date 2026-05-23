@@ -1,17 +1,15 @@
 {
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
   "name": "Nolma",
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "favicon": "/favicon.svg",
   "colors": {
     "primary": "#C0C1FF",
     "light": "#C0C1FF",
-    "dark": "#9899FF",
-    "background": {
-      "dark": "#050505"
-    }
+    "dark": "#9899FF"
+  },
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://nolma.ai/sign-up"
   },
   "topbarLinks": [
     {
@@ -19,37 +17,14 @@
       "url": "https://nolma.ai/dashboard"
     }
   ],
-  "topbarCtaButton": {
-    "name": "Get Started",
-    "url": "https://nolma.ai/sign-up"
-  },
-  "tabs": [],
-  "anchors": [
-    {
-      "name": "API Reference",
-      "icon": "code",
-      "url": "api-reference"
-    },
-    {
-      "name": "GitHub",
-      "icon": "github",
-      "url": "https://github.com/lumyteai"
-    }
-  ],
   "navigation": [
     {
       "group": "Get Started",
-      "pages": [
-        "introduction",
-        "quickstart"
-      ]
+      "pages": ["introduction", "quickstart"]
     },
     {
       "group": "SDKs",
-      "pages": [
-        "sdk/python",
-        "sdk/node"
-      ]
+      "pages": ["sdk/python", "sdk/node"]
     },
     {
       "group": "Guard",
@@ -85,6 +60,7 @@
     }
   ],
   "footerSocials": {
-    "twitter": "https://twitter.com/nolmaai"
+    "twitter": "https://twitter.com/nolmaai",
+    "github": "https://github.com/lumyteai"
   }
 }
