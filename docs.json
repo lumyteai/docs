@@ -17,48 +17,55 @@
       "url": "https://nolma.ai/dashboard"
     }
   ],
-  "navigation": [
-    {
-      "group": "Get Started",
-      "pages": ["introduction", "quickstart"]
-    },
-    {
-      "group": "SDKs",
-      "pages": ["sdk/python", "sdk/node"]
-    },
-    {
-      "group": "Guard",
-      "pages": [
-        "guard/overview",
-        "guard/budgets",
-        "guard/alerts"
-      ]
-    },
-    {
-      "group": "Lens",
-      "pages": [
-        "lens/overview",
-        "lens/signals",
-        "lens/shadow-mode"
-      ]
-    },
-    {
-      "group": "Providers",
-      "pages": [
-        "providers/openai",
-        "providers/anthropic",
-        "providers/gemini"
-      ]
-    },
-    {
-      "group": "API Reference",
-      "pages": [
-        "api-reference/gateway",
-        "api-reference/signal",
-        "api-reference/errors"
-      ]
-    }
-  ],
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "SDKs",
+            "pages": ["sdk/python", "sdk/node"]
+          },
+          {
+            "group": "Guard",
+            "pages": [
+              "guard/overview",
+              "guard/budgets",
+              "guard/alerts"
+            ]
+          },
+          {
+            "group": "Lens",
+            "pages": [
+              "lens/overview",
+              "lens/signals",
+              "lens/shadow-mode"
+            ]
+          },
+          {
+            "group": "Providers",
+            "pages": [
+              "providers/openai",
+              "providers/anthropic",
+              "providers/gemini"
+            ]
+          },
+          {
+            "group": "API Reference",
+            "pages": [
+              "api-reference/gateway",
+              "api-reference/signal",
+              "api-reference/errors"
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "footerSocials": {
     "twitter": "https://twitter.com/nolmaai",
     "github": "https://github.com/lumyteai"
